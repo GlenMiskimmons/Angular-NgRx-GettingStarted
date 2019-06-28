@@ -1,4 +1,31 @@
-export function reducer(state, action) {
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+
+import { Product } from '../product';
+import * as RootState from '../../state/app.state';
+
+export interface State extends RootState.State {
+    products: ProductState;
+}
+
+export interface ProductState {
+    showProductCode: boolean;
+    currentProduct: Product;
+    products: Product[];
+}
+
+const initialState: ProductState = {
+    showProductCode: true,
+    currentProduct: null,
+    products: []
+};
+
+const getProductFeatureSelector = createFeatureSelector<ProductState>('products');
+
+export const getShowProductCode = createSelector(getProductFeatureSelector, state => state.showProductCode);
+export const getCurrentProduct = createSelector(getProductFeatureSelector, state => state.currentProduct);
+export const getProducts = createSelector(getProductFeatureSelector, state => state.products);
+
+export function reducer(state = initialState, action): ProductState {
     switch(action.type) {
         case 'TOGGLE_PRODUCT_CODE':
             return {
