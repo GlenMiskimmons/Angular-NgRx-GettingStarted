@@ -2,6 +2,7 @@ import { createFeatureSelector, MemoizedSelector, createSelector } from '@ngrx/s
 
 import * as RootState from '../../state/app.state';
 import { User } from '../user';
+import { UserActions, UserActionTypes } from './user.action';
 
 export interface State extends RootState.State {
     users: UserState;
@@ -22,9 +23,9 @@ const getUserFeatureSelector: MemoizedSelector<any, UserState> = createFeatureSe
 export const getMaskUserName = createSelector(getUserFeatureSelector, ((state: UserState) => state.maskUserName));
 export const getCurrentUser = createSelector(getUserFeatureSelector, ((state: UserState) => state.currentUser));
 
-export function reducer(state = initalState, action) {
+export function reducer(state = initalState, action: UserActions) {
     switch(action.type) {
-        case 'MASK_USER_NAME':
+        case UserActionTypes.ToggleMaskUserName:
             return {
                 ...state,
                 maskUserName: action.payload
