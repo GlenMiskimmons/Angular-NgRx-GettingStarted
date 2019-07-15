@@ -7,6 +7,8 @@ import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
 import * as fromProduct from '../state/product.reducer';
 import * as productActions from '../state/product.actions';
+import { Observable } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'pm-product-list',
@@ -21,30 +23,35 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   products: Product[];
 
+
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
+
+  componentActive = true;
+
+  products$: Observable<Product[]>;
+
+  errorMessage$: Observable<string>;
 
   constructor(private productService: ProductService,
               private store: Store<fromProduct.State>) { }
 
   ngOnInit(): void {
-    // TODO: Unsubscribe
-    this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(
-        currentProduct => this.selectedProduct = currentProduct
-    );
+    this.store.pipe(select(fromProduct.getCurrentProduct),
+      takeWhile(() => this.componentActive))
+      .subscribe(currentProduct => this.selectedProduct = currentProduct);
 
+    this.errorMessage$ = this.store.pipe(select(fromProduct.getError));
     this.store.dispatch(new productActions.Load());
-    this.store.pipe(select(fromProduct.getProducts))
-    .subscribe((products: Product[]) => this.products = products);
+    this.products$ = this.store.pipe(select(fromProduct.getProducts));
     // this.productService.getProducts().subscribe(
     //   (products: Product[]) => this.products = products,
     //   (err: any) => this.errorMessage = err.error
     // );
 
-    // TODO: Unsubscribe
-    this.store.pipe(select(fromProduct.getShowProductCode)).subscribe(
-        showProductCode => this.displayCode = showProductCode
-    );
+    this.store.pipe(select(fromProduct.getShowProductCode),
+    takeWhile(() => this.componentActive))
+    .subscribe(showProductCode => this.displayCode = showProductCode);
   }
 
   ngOnDestroy(): void {
