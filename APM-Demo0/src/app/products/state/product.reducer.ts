@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { Product } from '../product';
 import * as RootState from '../../state/app.state';
-import { ProductActions, ProcductActionTypes } from './product.actions';
+import { ProductActions, ProductActionTypes } from './product.actions';
 import { pipe } from '@angular/core/src/render3/pipe';
 
 export interface State extends RootState.State {
@@ -45,39 +45,39 @@ export const getError = createSelector(getProductFeatureSelector, state => state
 
 export function reducer(state = initialState, action: ProductActions): ProductState {
     switch(action.type) {
-        case ProcductActionTypes.ToggleProductCode:
+        case ProductActionTypes.ToggleProductCode:
             return {
                 ...state,
                 showProductCode: action.payload
             };
-        case ProcductActionTypes.SetCurrentProduct:
+        case ProductActionTypes.SetCurrentProduct:
             return {
                 ...state,
                 currentProductId: action.payload.id
             };
-        case ProcductActionTypes.ClearCurrentProduct:
+        case ProductActionTypes.ClearCurrentProduct:
             return {
                 ...state,
                 currentProductId: null
             };
-        case ProcductActionTypes.InitializeCurrentProduct:
+        case ProductActionTypes.InitializeCurrentProduct:
             return {
                 ...state,
                 currentProductId: 0
             };
-        case ProcductActionTypes.LoadSuccess:
+        case ProductActionTypes.LoadSuccess:
             return {
                 ...state,
                 products: action.payload,
                 error: ''
             };
-        case ProcductActionTypes.LoadFailure:
+        case ProductActionTypes.LoadFailure:
             return {
                 ...state,
                 products: [],
                 error: action.payload
             };
-        case ProcductActionTypes.UpdateProductSuccess:
+        case ProductActionTypes.UpdateProductSuccess:
             const updatedProducts = state.products.map(item => action.payload.id === item.id ? action.payload : item);
             return {
                 ...state,
@@ -85,7 +85,32 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
                 currentProductId: action.payload.id,
                 error: ''
             };
-        case ProcductActionTypes.UpdateProductFailure:
+        case ProductActionTypes.UpdateProductFailure:
+            return {
+                ...state,
+                error: action.payload
+            };
+        case ProductActionTypes.CreateProductSuccess:
+            return {
+                ...state,
+                products: [...state.products, action.payload],
+                currentProductId: action.payload.id,
+                error: ''
+            };
+        case ProductActionTypes.CreateProductFailure:
+            return {
+                ...state,
+                error: action.payload
+            };
+        case ProductActionTypes.DeleteProductSuccess:
+            console.log('test', action.payload);
+            return {
+                ...state,
+                products: state.products.filter((item: Product) => item.id !== action.payload),
+                currentProductId: null,
+                error: ''
+            }
+        case ProductActionTypes.DeleteProductFailure:
             return {
                 ...state,
                 error: action.payload
