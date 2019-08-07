@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Product } from '../../product';
-import { ProductService } from '../../product.service';
 
 /* NgRx */
 import { Store, select } from '@ngrx/store';
@@ -40,5 +39,21 @@ export class ProductShellComponent implements OnInit {
 
     productSelected(product: Product): void {
       this.store.dispatch(new productActions.SetCurrentProduct(product));
+    }
+
+    productSelectedClear(): void {
+        this.store.dispatch(new productActions.ClearCurrentProduct());
+    }
+
+    productCreated(product: Product): void {
+        this.store.dispatch(new productActions.CreateProduct(product));
+    }
+
+    productDeleted(productId: number): void {
+        this.store.dispatch(new productActions.DeleteProduct(productId));
+    }
+
+    productUpdated(product: Product): void {
+        this.store.dispatch(new productActions.UpdateProduct(product));
     }
 }

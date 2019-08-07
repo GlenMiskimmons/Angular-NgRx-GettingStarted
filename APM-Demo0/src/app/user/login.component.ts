@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from './auth.service';
 import { Store, select } from '@ngrx/store';
 import * as UserActions from './state/user.action';
-import * as fromUser from './state/user.reducer';
+import * as fromUser from './state';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private readonly store: Store<any>) {
+              private readonly store: Store<fromUser.State>) {
   }
 
   ngOnInit(): void {
